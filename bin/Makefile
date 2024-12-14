@@ -1,16 +1,20 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -g
-LDFLAGS = -pthread -ljson-c -lm
+LDFLAGS = -pthread -lm
 
+SRCS = main.c memory_tracking.c memory_analysis.c page_table.c memory_hierarchy.c
+OBJS = $(SRCS:.c=.o)
 TARGET = vmd
-SRC = memoryanalysis.c
+
+.PHONY: all clean
 
 all: $(TARGET)
 
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+$(TARGET): $(OBJS)
+	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET)
-
-.PHONY: all clean 
+	rm -f $(OBJS) $(TARGET)

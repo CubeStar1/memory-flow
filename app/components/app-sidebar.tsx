@@ -1,6 +1,6 @@
 "use client"
 
-import { BarChart3, Cpu, Home, Settings } from "lucide-react"
+import { BarChart3, Cpu, Home, Settings, Table, Layers } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -11,7 +11,7 @@ import {
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-
+import Image from "next/image"
 const navItems = [
   {
     title: "Home",
@@ -34,18 +34,32 @@ const navItems = [
     url: "/settings",
     icon: Settings,
   },
+  {
+    title: "Page Table",
+    url: "/pagetable",
+    icon: Table,
+  },
+  {
+    title: "Memory Hierarchy",
+    url: "/hierarchy",
+    icon: Layers,
+  },
 ]
 
 export function AppSidebar() {
   return (
     <Sidebar>
-      <div className="px-6 py-5 border-b">
+      
+      <SidebarHeader>
+      <div className="px-6 py-4 border-b flex items-center gap-2">
+        <Image src="/vmd_logo.png" alt="Logo" width={100} height={100} />
         <h1 className="text-sm font-semibold">Virtual Memory Dashboard</h1>
       </div>
-      <SidebarHeader>
-        <NavMain items={navItems} />
       </SidebarHeader>
       <SidebarContent>
+        <NavMain
+          items={navItems}
+        />
         <NavProjects
           projects={[
             {

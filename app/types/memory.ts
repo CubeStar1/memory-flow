@@ -68,4 +68,33 @@ export interface MemoryData {
   systemMemory: SystemMemory
   processMemory: ProcessMemory
   memoryMappings: MemoryMapping[]
+}
+
+export interface PageTableEntry {
+  virtual_addr: string
+  physical_addr: string
+  page_size: number
+  is_present: boolean
+  is_writable: boolean
+  is_executable: boolean
+  is_cached: boolean
+  is_dirty: boolean
+  level: number
+}
+
+export interface MemoryRegionInfo {
+  type: string
+  start_addr: string
+  end_addr: string
+  size: number
+  permissions: string
+  mapped_file: string
+}
+
+export interface PageTableData {
+  page_table: PageTableEntry[]
+}
+
+export interface MemoryHierarchyData {
+  memory_regions: MemoryRegionInfo[]
 } 

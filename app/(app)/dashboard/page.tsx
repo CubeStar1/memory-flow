@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button'
 import { SystemMemoryView } from '@/app/components/memory/SystemMemoryView'
 import { ProcessMemoryView } from '@/app/components/memory/ProcessMemoryView'
 import { MemoryMappingView } from '@/app/components/memory/MemoryMappingView'
+import { MemoryMapVisualizer } from '@/app/components/visualizations/MemoryMapVisualizer'
 import { MemoryData } from '@/app/types/memory'
 import { SidebarInset } from "@/components/ui/sidebar"
 import { Header } from "@/app/components/header/Header"
-
+import { Loader2 } from "lucide-react"
 export default function Dashboard() {
   const [data, setData] = useState<MemoryData | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -42,7 +43,7 @@ export default function Dashboard() {
 
   const refreshButton = (
     <Button onClick={fetchData} disabled={loading}>
-      {loading ? 'Refreshing...' : 'Refresh Data'}
+      {loading ? <Loader2 className="animate-spin" /> : 'Refresh Data'}
     </Button>
   )
 
@@ -80,7 +81,12 @@ export default function Dashboard() {
           </TabsContent>
 
           <TabsContent value="mapping">
-            {data?.memoryMappings && <MemoryMappingView data={data.memoryMappings} />}
+            {data?.memoryMappings && (
+              <div className="space-y-4">
+                <MemoryMappingView data={data.memoryMappings} />
+                <MemoryMapVisualizer entries={data.processMemory?.entries || []} />
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>

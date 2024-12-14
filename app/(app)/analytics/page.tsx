@@ -7,6 +7,7 @@ import { MemoryHealthIndicator } from '@/app/components/monitoring/MemoryHealthI
 import { MemoryTimelineChart } from '@/app/components/visualizations/MemoryTimelineChart'
 import { MemoryOptimizer } from '@/app/components/analysis/MemoryOptimizer'
 import { MemoryPieChart } from "@/app/components/visualizations/MemoryPieChart"
+import { Loader2 } from "lucide-react"
 import {
   SidebarInset,
   SidebarTrigger,
@@ -59,7 +60,7 @@ export default function AnalyticsPage() {
 
   const refreshButton = (
     <Button onClick={fetchData} disabled={loading}>
-      {loading ? 'Refreshing...' : 'Refresh Data'}
+      {loading ? <Loader2 className="animate-spin" /> : 'Refresh Data'}
     </Button>
   )
 
