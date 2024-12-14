@@ -6,6 +6,21 @@ import { MemoryMetrics, TimelineData } from '@/app/types/analytics'
 import { MemoryHealthIndicator } from '@/app/components/monitoring/MemoryHealthIndicator'
 import { MemoryTimelineChart } from '@/app/components/visualizations/MemoryTimelineChart'
 import { MemoryOptimizer } from '@/app/components/analysis/MemoryOptimizer'
+import { MemoryPieChart } from "@/app/components/visualizations/MemoryPieChart"
+import {
+  SidebarInset,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
+import { Header } from "@/app/components/header/Header"
 
 export default function AnalyticsPage() {
   const [metrics, setMetrics] = useState<MemoryMetrics | null>(null)
@@ -42,41 +57,42 @@ export default function AnalyticsPage() {
     return () => clearInterval(interval)
   }, [])
 
+  const refreshButton = (
+    <Button onClick={fetchData} disabled={loading}>
+      {loading ? 'Refreshing...' : 'Refresh Data'}
+    </Button>
+  )
+
   if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="bg-red-50 dark:bg-red-900 p-4 rounded-lg">
-          <h2 className="text-red-800 dark:text-red-200">Error</h2>
-          <p className="text-red-600 dark:text-red-300">{error}</p>
-        </div>
+      <div className="bg-red-50 dark:bg-red-900 p-4 rounded-lg">
+        <h2 className="text-red-800 dark:text-red-200">Error</h2>
+        <p className="text-red-600 dark:text-red-300">{error}</p>
       </div>
     )
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold">Memory Analytics</h1>
-        <Button 
-          onClick={fetchData} 
-          disabled={loading}
-        >
-          {loading ? 'Refreshing...' : 'Refresh Data'}
-        </Button>
-      </div>
-
-      <div className="space-y-6">
+    <SidebarInset>
+      <Header action={refreshButton} />
+      <div className="flex flex-1 flex-col gap-4 p-4">
         {metrics && (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid gap-4 md:grid-cols-2">
               <MemoryHealthIndicator metrics={metrics} />
               <MemoryOptimizer metrics={metrics} />
             </div>
-            
-            <MemoryTimelineChart data={timelineData} />
+            <div className="grid gap-4 md:grid-cols-7">
+              <div className="md:col-span-4">
+                <MemoryTimelineChart data={timelineData} />
+              </div>
+              <div className="md:col-span-3">
+                <MemoryPieChart data={timelineData[timelineData.length - 1]} />
+              </div>
+            </div>
           </>
         )}
       </div>
-    </div>
+    </SidebarInset>
   )
 } 

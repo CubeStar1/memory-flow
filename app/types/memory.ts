@@ -5,6 +5,7 @@ export interface SystemMemory {
   available: number
   buffers: number
   cached: number
+  pageFaults: number
   
   // Swap Memory
   swapTotal: number

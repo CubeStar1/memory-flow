@@ -7,6 +7,8 @@ import { SystemMemoryView } from '@/app/components/memory/SystemMemoryView'
 import { ProcessMemoryView } from '@/app/components/memory/ProcessMemoryView'
 import { MemoryMappingView } from '@/app/components/memory/MemoryMappingView'
 import { MemoryData } from '@/app/types/memory'
+import { SidebarInset } from "@/components/ui/sidebar"
+import { Header } from "@/app/components/header/Header"
 
 export default function Dashboard() {
   const [data, setData] = useState<MemoryData | null>(null)
@@ -38,48 +40,50 @@ export default function Dashboard() {
     return () => clearInterval(interval)
   }, [])
 
+  const refreshButton = (
+    <Button onClick={fetchData} disabled={loading}>
+      {loading ? 'Refreshing...' : 'Refresh Data'}
+    </Button>
+  )
+
   if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <div className="bg-red-50 dark:bg-red-900 p-4 rounded-lg">
-          <h2 className="text-red-800 dark:text-red-200">Error</h2>
-          <p className="text-red-600 dark:text-red-300">{error}</p>
+      <SidebarInset>
+        <Header action={refreshButton} />
+        <div className="flex flex-1 flex-col gap-4 p-4">
+          <div className="bg-red-50 dark:bg-red-900 p-4 rounded-lg">
+            <h2 className="text-red-800 dark:text-red-200">Error</h2>
+            <p className="text-red-600 dark:text-red-300">{error}</p>
+          </div>
         </div>
-      </div>
+      </SidebarInset>
     )
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold">Virtual Memory Dashboard</h1>
-        <Button 
-          onClick={fetchData} 
-          disabled={loading}
-        >
-          {loading ? 'Refreshing...' : 'Refresh Data'}
-        </Button>
+    <SidebarInset>
+      <Header action={refreshButton} />
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="system">System Memory</TabsTrigger>
+            <TabsTrigger value="process">Process Memory</TabsTrigger>
+            <TabsTrigger value="mapping">Memory Mapping</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="system">
+            {data?.systemMemory && <SystemMemoryView data={data.systemMemory} />}
+          </TabsContent>
+
+          <TabsContent value="process">
+            {data?.processMemory && <ProcessMemoryView data={data.processMemory} />}
+          </TabsContent>
+
+          <TabsContent value="mapping">
+            {data?.memoryMappings && <MemoryMappingView data={data.memoryMappings} />}
+          </TabsContent>
+        </Tabs>
       </div>
-
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="system">System Memory</TabsTrigger>
-          <TabsTrigger value="process">Process Memory</TabsTrigger>
-          <TabsTrigger value="mapping">Memory Mapping</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="system">
-          {data?.systemMemory && <SystemMemoryView data={data.systemMemory} />}
-        </TabsContent>
-
-        <TabsContent value="process">
-          {data?.processMemory && <ProcessMemoryView data={data.processMemory} />}
-        </TabsContent>
-
-        <TabsContent value="mapping">
-          {data?.memoryMappings && <MemoryMappingView data={data.memoryMappings} />}
-        </TabsContent>
-      </Tabs>
-    </div>
+    </SidebarInset>
   )
 } 
