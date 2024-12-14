@@ -4,12 +4,25 @@ import { MoveRight, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Badge } from "@/components/ui/badge";
+import { DotPattern } from "@/components/magicui/dot-pattern";
 import Image from "next/image";
 import Link from "next/link";
 
 export const Hero = () => (
-  <div className="w-full py-20 lg:py-40">
-    <div className="container mx-auto">
+  <div className="relative w-full py-20 lg:py-40 overflow-hidden">
+    {/* Background with dot pattern */}
+    <div className="absolute inset-0">
+      <DotPattern
+        width={20}
+        height={20}
+        cx={1}
+        cy={1}
+        cr={1}
+        className="[mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
+      />
+    </div>
+
+    <div className="container mx-auto relative">
       <div className="grid grid-cols-1 gap-8 items-center lg:grid-cols-2">
         <div className="flex gap-4 flex-col">
           <div>
