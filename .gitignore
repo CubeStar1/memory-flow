@@ -20,6 +20,10 @@
 # production
 /build
 
+# binaries
+# /bin/*
+# !/bin/.gitkeep
+
 # misc
 .DS_Store
 *.pem
