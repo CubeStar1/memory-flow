@@ -55,7 +55,7 @@ sudo apt-get install build-essential libjson-c-dev
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/virtual-memory-dashboard.git
+git clone https://github.com/CubeStar1/memory-flow.git
 ```
 
 2. First, compile the memory analysis backend:
