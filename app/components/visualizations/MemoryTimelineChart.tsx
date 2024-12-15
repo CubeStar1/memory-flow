@@ -1,12 +1,43 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+"use client"
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { TimelineData } from "@/app/types/analytics"
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Legend } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Cell, Pie, PieChart, ResponsiveContainer } from "recharts"
+import { TrendingUp } from "lucide-react"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+import { MemoryPieChart } from "./MemoryPieChart"
 
 interface MemoryTimelineChartProps {
   data: TimelineData[]
 }
 
-// Helper function to format bytes to human readable format
+const chartConfig = {
+  used_memory: {
+    label: "Used Memory",
+    color: "hsl(var(--chart-1))",
+  },
+  available_memory: {
+    label: "Available Memory",
+    color: "hsl(var(--chart-2))",
+  },
+  pageFaults: {
+    label: "Page Faults",
+    color: "hsl(var(--chart-3))",
+  },
+} satisfies ChartConfig
+
+const COLORS = {
+  used: "hsl(221.2 83.2% 53.3%)",    // blue-600
+  available: "hsl(142.1 76.2% 36.3%)" // green-600
+}
+
 const formatBytes = (bytes: number) => {
   if (bytes === 0) return '0 B'
   const k = 1024
@@ -15,109 +46,167 @@ const formatBytes = (bytes: number) => {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
 }
 
-// Updated tooltip component
-const CustomTooltip = ({ active, payload, label }: any) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="rounded-lg border bg-background p-2 shadow-sm">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="flex flex-col">
-            <span className="text-[0.70rem] uppercase text-muted-foreground">
-              Used Memory
-            </span>
-            <span className="font-bold text-muted-foreground">
-              {formatBytes(payload[0].value)}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[0.70rem] uppercase text-muted-foreground">
-              Available Memory
-            </span>
-            <span className="font-bold text-muted-foreground">
-              {formatBytes(payload[1].value)}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[0.70rem] uppercase text-muted-foreground">
-              Page Faults
-            </span>
-            <span className="font-bold text-muted-foreground">
-              {payload[2].value.toFixed(2)}/s
-            </span>
-          </div>
-        </div>
-        <div className="text-[0.70rem] text-muted-foreground">
-          {new Date(label).toLocaleTimeString()}
-        </div>
-      </div>
-    )
-  }
-  return null
-}
-
 export function MemoryTimelineChart({ data }: MemoryTimelineChartProps) {
+  const formattedData = data.map(item => ({
+    ...item,
+    timestamp: new Date(item.timestamp).toLocaleTimeString(),
+    used_memory: Number((item.used_memory / (1024 * 1024 * 1024)).toFixed(2)),
+    available_memory: Number((item.available_memory / (1024 * 1024 * 1024)).toFixed(2)),
+  }))
+
+  // Prepare pie chart data
+  const latestData = data[data.length - 1]
+  const totalMemory = latestData.used_memory + latestData.available_memory
+  const pieData = [
+    { 
+      name: "Used Memory",
+      value: latestData.used_memory,
+      percentage: ((latestData.used_memory / totalMemory) * 100).toFixed(1),
+    },
+    { 
+      name: "Available Memory",
+      value: latestData.available_memory,
+      percentage: ((latestData.available_memory / totalMemory) * 100).toFixed(1),
+    },
+  ]
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Memory Usage Over Time</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
-              <XAxis 
-                dataKey="timestamp" 
-                tickFormatter={(value) => new Date(value).toLocaleTimeString()}
-                stroke="#888888"
-                fontSize={12}
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+      {/* Memory Usage Timeline */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Memory Usage Over Time</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <AreaChart
+              data={formattedData}
+              height={300}
+              margin={{ top: 16, right: 32, bottom: 32, left: 32 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="timestamp"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
               />
-              <YAxis 
-                yAxisId="memory"
-                stroke="#888888"
-                fontSize={12}
-                tickFormatter={formatBytes}
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => `${value}GB`}
               />
-              <YAxis 
-                yAxisId="faults"
-                orientation="right"
-                stroke="#888888"
-                fontSize={12}
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
               />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
               <Area
-                yAxisId="memory"
-                type="monotone"
+                type="natural"
                 dataKey="used_memory"
-                stroke="#2563eb"
-                fill="#3b82f6"
-                fillOpacity={0.2}
-                name="Used Memory"
-                stackId="memory"
+                stroke="var(--color-used_memory)"
+                fill="var(--color-used_memory)"
+                fillOpacity={0.4}
               />
               <Area
-                yAxisId="memory"
-                type="monotone"
+                type="natural"
                 dataKey="available_memory"
-                stroke="#16a34a"
-                fill="#22c55e"
-                fillOpacity={0.2}
-                name="Available Memory"
-                stackId="memory"
+                stroke="var(--color-available_memory)"
+                fill="var(--color-available_memory)"
+                fillOpacity={0.4}
+              />
+              <ChartLegend content={<ChartLegendContent />} />
+            </AreaChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* Memory Distribution Pie Chart */}
+      <MemoryPieChart data={data[data.length - 1]} />
+
+      {/* Page Faults Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Page Faults</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={{ pageFaults: chartConfig.pageFaults }}>
+            <AreaChart
+              data={formattedData}
+              height={300}
+              margin={{ top: 16, right: 32, bottom: 32, left: 32 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="timestamp"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => `${value}/s`}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
               />
               <Area
-                yAxisId="faults"
-                type="monotone"
+                type="natural"
                 dataKey="pageFaults"
-                stroke="#dc2626"
-                fill="#ef4444"
-                fillOpacity={0.2}
-                name="Page Faults"
+                stroke="var(--color-pageFaults)"
+                fill="var(--color-pageFaults)"
+                fillOpacity={0.4}
               />
+              <ChartLegend content={<ChartLegendContent />} />
             </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </CardContent>
-    </Card>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+
+      {/* Memory Trends Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Memory Trends</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChartContainer config={chartConfig}>
+            <AreaChart
+              data={formattedData}
+              height={300}
+              margin={{ top: 16, right: 32, bottom: 32, left: 32 }}
+            >
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="timestamp"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                tickFormatter={(value) => `${value}GB`}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent indicator="line" />}
+              />
+              <Area
+                type="natural"
+                dataKey="used_memory"
+                stroke="var(--color-used_memory)"
+                fill="var(--color-used_memory)"
+                fillOpacity={0.4}
+              />
+              <ChartLegend content={<ChartLegendContent />} />
+            </AreaChart>
+          </ChartContainer>
+        </CardContent>
+      </Card>
+    </div>
   )
 } 

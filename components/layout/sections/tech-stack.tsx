@@ -14,8 +14,7 @@ export const TechStack = () => (
               Built with Modern Technologies
             </h2>
             <p className="text-lg lg:max-w-sm leading-relaxed tracking-tight text-muted-foreground text-left">
-              Leveraging cutting-edge technologies to provide real-time memory analysis and monitoring. 
-              Our stack combines powerful C-based analysis with a modern web interface.
+              We use a C program to analyze the system's memory and then display the data in a Next.js dashboard. The dashboard periodically fetches the data from the C program and updates the UI.
             </p>
           </div>
         </div>

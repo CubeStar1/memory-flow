@@ -69,7 +69,7 @@ const featureList: FeatureProps[] = [
 export const Navbar = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   return (
-    <header className="shadow-inner bg-opacity-15 w-[90%] md:w-[70%] lg:w-[75%] lg:max-w-screen-xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card">
+    <header className="shadow-inner bg-opacity-15 w-[90%] md:w-[70%] lg:w-[75%] lg:max-w-screen-xl top-5 mx-auto sticky border border-secondary z-40 rounded-2xl flex justify-between items-center p-2 bg-card/60 backdrop-blur-md">
       <Link href="/" className="font-bold text-lg flex items-center">
         {/* <Activity className="bg-gradient-to-tr border-secondary from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border p-1.5 text-white" /> */}
         <Image src="/vmd_logo.png" alt="Logo" width={30} height={30} className="mr-2"/>
@@ -127,13 +127,13 @@ export const Navbar = () => {
       <NavigationMenu className="hidden lg:block mx-auto">
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="">
+            <NavigationMenuTrigger className="bg-transparent">
               Features
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
                 {featureList.map(({ title, description }) => (
-                  <li key={title} className="rounded-md p-3 text-sm hover:bg-muted">
+                  <li key={title} className="rounded-md p-3 hover:bg-muted">
                     <p className="mb-1 font-semibold leading-none text-foreground">
                       {title}
                     </p>
@@ -149,7 +149,7 @@ export const Navbar = () => {
           <NavigationMenuItem>
             {routeList.map(({ href, label }) => (
               <NavigationMenuLink key={href} asChild>
-                <Link href={href} className="text-base px-2">
+                <Link href={href} className="px-2">
                   {label}
                 </Link>
               </NavigationMenuLink>

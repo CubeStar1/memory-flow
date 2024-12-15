@@ -6,7 +6,6 @@ import { MemoryMetrics, TimelineData } from '@/app/types/analytics'
 import { MemoryHealthIndicator } from '@/app/components/monitoring/MemoryHealthIndicator'
 import { MemoryTimelineChart } from '@/app/components/visualizations/MemoryTimelineChart'
 import { MemoryOptimizer } from '@/app/components/analysis/MemoryOptimizer'
-import { MemoryPieChart } from "@/app/components/visualizations/MemoryPieChart"
 import { Loader2 } from "lucide-react"
 import {
   SidebarInset,
@@ -25,6 +24,7 @@ import { Header } from "@/app/components/header/Header"
 
 export default function AnalyticsPage() {
   const [metrics, setMetrics] = useState<MemoryMetrics | null>(null)
+  const [initialMetrics, setInitialMetrics] = useState<MemoryMetrics | null>(null)
   const [timelineData, setTimelineData] = useState<TimelineData[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -37,6 +37,10 @@ export default function AnalyticsPage() {
       const data = await response.json()
 
       setMetrics(data)
+      if (!initialMetrics) {
+        setInitialMetrics(data)
+      }
+      
       setTimelineData(prevData => [...prevData, {
         timestamp: Date.now(),
         used_memory: data.memory_usage || 0,
@@ -81,16 +85,9 @@ export default function AnalyticsPage() {
           <>
             <div className="grid gap-4 md:grid-cols-2">
               <MemoryHealthIndicator metrics={metrics} />
-              <MemoryOptimizer metrics={metrics} />
+              {initialMetrics && <MemoryOptimizer metrics={initialMetrics} />}
             </div>
-            <div className="grid gap-4 md:grid-cols-7">
-              <div className="md:col-span-4">
-                <MemoryTimelineChart data={timelineData} />
-              </div>
-              <div className="md:col-span-3">
-                <MemoryPieChart data={timelineData[timelineData.length - 1]} />
-              </div>
-            </div>
+            <MemoryTimelineChart data={timelineData} />
           </>
         )}
       </div>

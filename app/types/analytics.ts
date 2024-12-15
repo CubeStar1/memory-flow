@@ -16,6 +16,6 @@ export interface TimelineData {
 
 export interface MemoryRecommendation {
   message: string
-  severity: 'low' | 'medium' | 'high'
-  type: 'fragmentation' | 'leaks' | 'pressure' | 'swap'
+  severity: 'high' | 'medium' | 'low'
+  type: string
 } 
