@@ -5,32 +5,32 @@ const features = [
   {
     title: "System Memory Overview",
     description: "Monitor system-wide memory statistics in real-time with detailed usage breakdowns and trends.",
-    image: "/dashboard_system_memory.png"
+    image: "/dashboard_system_memory_2.png"
   },
   {
     title: "Process Memory Analysis",
     description: "Track and analyze memory usage patterns of individual processes to identify potential issues.",
-    image: "/dashboard_process_memory.png"
+    image: "/dashboard_process_memory_2.png"
   },
   {
     title: "Memory Mapping View",
     description: "Visualize virtual memory mappings and understand memory allocation patterns across your system.",
-    image: "/dashboard_mapping.png"
+    image: "/dashboard_mapping_2.png"
   },
   {
     title: "Memory Health Indicators",
     description: "Get instant insights into your system's memory health with comprehensive analytics and alerts.",
-    image: "/analytics.png"
+    image: "/analytics_2.png"
   },
   {
     title: "Page Table Explorer",
     description: "Examine virtual to physical memory mappings with detailed page table visualization.",
-    image: "/dashboard_pagetable.png"
+    image: "/page_table.png"
   },
   {
     title: "Memory Hierarchy View",
     description: "Understand your system's memory hierarchy with interactive visualizations of different memory levels.",
-    image: "/dashboard_hierarchy.png"
+    image: "/memory_heirarchy.png"
   }
 ];
 
