@@ -2,7 +2,7 @@
 
 A memory monitoring and analysis dashboard built with Next.js and C, providing real-time insights into system and process memory usage.
 
-![Landing Page](./public/landing.png)
+![Landing Page](./public/landing_2.png)
 ![Dashboard Screenshot](./public/dashboard_system_memory_2.png)
 ![Dashboard Screenshot](./public/dashboard_process_memory_2.png)
 ![Dashboard Screenshot](./public/dashboard_mapping_2.png)
