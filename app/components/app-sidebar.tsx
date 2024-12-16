@@ -30,11 +30,6 @@ const navItems = [
     icon: Cpu,
   },
   {
-    title: "Settings",
-    url: "/settings",
-    icon: Settings,
-  },
-  {
     title: "Page Table",
     url: "/pagetable",
     icon: Table,

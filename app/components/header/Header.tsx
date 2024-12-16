@@ -26,14 +26,16 @@ const routes = {
     name: "Analytics",
     path: "/analytics",
   },
-  "/monitoring": {
-    name: "Monitoring",
-    path: "/monitoring",
+  "/pagetable": {
+    name: "Page Table",
+    path: "/pagetable",
   },
-  "/settings": {
-    name: "Settings",
-    path: "/settings",
+  "/hierarchy": {
+    name: "Memory Hierarchy",
+    path: "/hierarchy",
   },
+
+
 }
 
 export function Header({ 

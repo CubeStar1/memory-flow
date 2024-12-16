@@ -11,6 +11,9 @@ import { MemoryData } from '@/app/types/memory'
 import { SidebarInset } from "@/components/ui/sidebar"
 import { Header } from "@/app/components/header/Header"
 import { Loader2 } from "lucide-react"
+
+const refreshInterval = parseInt(process.env.NEXT_PUBLIC_REFRESH_INTERVAL!)
+
 export default function Dashboard() {
   const [data, setData] = useState<MemoryData | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -37,7 +40,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchData()
     // Refresh every 5 seconds
-    const interval = setInterval(fetchData, 5000)
+    const interval = setInterval(fetchData, refreshInterval)
     return () => clearInterval(interval)
   }, [])
 
